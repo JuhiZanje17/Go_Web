@@ -1,0 +1,39 @@
+basic overview for webform:
+https://gowebexamples.com/http-server/
+
+for http.FileServer():
+for using static files like js,css ,images
+https://stackoverflow.com/questions/27945310/why-do-i-need-to-use-http-stripprefix-to-access-my-static-files
+
+for handling of data in the form:
+https://gowebexamples.com/forms/
+
+f.Write():
+func (f *File) Write(b []byte) (n int, err error)
+Write writes len(b) bytes to the File(here file to which the pointer f is pointing).
+It returns the number of bytes written and an error, if any
+
+func OpenFile:
+func OpenFile(name string, flag int, perm FileMode) (*File, error)
+
+f, err := os.OpenFile("Information.json", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+
+OpenFile is the generalized open call; most users will use Open or Create instead. 
+It opens the named file with specified flag (O_RDONLY etc.). If the file does not exist, 
+and the O_CREATE flag is passed, it is created with mode perm (before umask). 
+If successful, methods on the returned File can be used for I/O. 
+If there is an error, it will be of type *PathError.
+
+// Exactly one of O_RDONLY, O_WRONLY, or O_RDWR must be specified.
+O_RDONLY int = syscall.O_RDONLY // open the file read-only.
+O_WRONLY int = syscall.O_WRONLY // open the file write-only.
+O_RDWR   int = syscall.O_RDWR   // open the file read-write.
+// The remaining values may be or'ed in to control behavior.
+O_APPEND int = syscall.O_APPEND // append data to the file when writing.
+O_CREATE int = syscall.O_CREAT  // create a new file if none exists.
+O_EXCL   int = syscall.O_EXCL   // used with O_CREATE, file must not exist.
+O_SYNC   int = syscall.O_SYNC   // open for synchronous I/O.
+O_TRUNC  int = syscall.O_TRUNC  // truncate regular writable file when opened.
+
+
+

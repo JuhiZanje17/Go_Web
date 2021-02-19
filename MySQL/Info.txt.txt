@@ -1,0 +1,18 @@
+sql:-
+
+sql.Open():-
+db, err := sql.Open("mysql", "username:password@(127.0.0.1:3308)/dbname?parseTime=true")
+->Note that Open does not directly open a database connection: this is deferred until a query is made. 
+To verify that a connection can be made before making a query, use the Ping function:
+->Open may just validate its arguments without creating a connection to the database. To verify that the data source name is valid, call Ping.
+
+db.Ping():-
+func (db *sql.DB) Ping() error
+Ping verifies a connection to the database is still alive, establishing a connection if necessary.
+
+db.QueryRow:-
+query := `SELECT id, username, password, created_at FROM users WHERE id = ?`
+err := db.QueryRow(query, 1).Scan(&id, &username, &password, &createdAt)
+QueryRow always returns a non-nil value. Errors are deferred until Row's Scan method is called.
+ If the query selects no rows, the *Row's Scan will return ErrNoRows. 
+Otherwise, the *Row's Scan scans the first selected row and discards the rest.

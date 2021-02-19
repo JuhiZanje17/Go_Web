@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>lets see</title>
+    
+</head>
+<body style="background:#ecffcd ;">
+    <!-- <h1>Lets see your uploaded pics!!</h1> -->
+        <table>
+                {{range .}}
+                <tr>
+                    <td>{{.Id}}</td>
+                    <td><img src="/static/{{.Name}}" height="150px" width="200px"></td>
+                </tr>
+                {{end}}
+        </table>
+</body>
+</html>

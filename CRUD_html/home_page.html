@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>USERS</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body style="background:#ecffcd ;">
+
+<div class="container">
+  <h2>USERS</h2>
+          
+  <table class="table" >
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Fav Food</th>
+        <th>Fav Sport</th>
+      </tr>
+    </thead>
+    <tbody>
+    {{range $x,$item:=.}}
+      <tr>
+        <td>{{$item.Id}}</td>
+        <td>{{$item.Name}}</td>
+        <td>{{$item.Food}}</td>
+        <td>{{$item.Sport}}</td>        
+        <td><a href="/update?id={{$item.Id}}"><button>Update</button></a></td>  
+        <td><a href="/delete?id={{$item.Id}}">delete</a></td>  
+      </tr>
+    {{end}}
+    </tbody>
+  </table>
+  
+  <a href="/insert"><button>Insert</button></a>
+</div>
+
+</body>
+</html>

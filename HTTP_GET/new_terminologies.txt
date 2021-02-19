@@ -1,0 +1,32 @@
+json to go struct:
+https://mholt.github.io/json-to-go/
+
+chrome extension to display json in structured form:
+json viewer
+https://chrome.google.com/webstore/detail/json-viewer/gbmdgpbipfallnflgajpaliibnhdgobh
+
+func ReadAll(r io.Reader) ([]byte, error)
+
+MarshalIndent:
+func MarshalIndent(v interface{}, prefix, indent string) ([]byte, error)
+MarshalIndent is like Marshal but applies Indent to format the output. 
+Each JSON element in the output will begin on a new line beginning with prefix 
+followed by one or more copies of indent according to the indentation nesting.
+
+WriteFile:
+func WriteFile(filename string, data []byte, perm os.FileMode) error
+WriteFile writes data to a file named by filename. If the file does not exist, 
+WriteFile creates it with permissions perm (before umask); 
+otherwise WriteFile truncates it before writing, without changing permissions.
+
+http.Get():
+resp,_:=http.Get(url)
+fmt.Println(resp)
+op:-
+&{200 OK 200 HTTP/1.1 1 1 map[Cache-Control:[max-age=0, private, must-revalidate] Connection:[keep-alive] Content-Type:[application/json;
+charset=utf-8] Date:[Thu, 04 Feb 2021 06:56:47 GMT] Etag:[W/"f2ad8fe1b9d07a6d42dc95b37a4006cb"] 
+Expect-Ct:[enforce; max-age=3600] Referrer-Policy:[strict-origin-when-cross-origin] Server:[nginx] 
+Strict-Transport-Security:[max-age=31536000; includeSubDomains] Vary:[Accept-Encoding Origin] 
+X-Content-Type-Options:[nosniff] X-Download-Options:[noopen] X-Frame-Options:[SAMEORIGIN sameorigin] 
+X-Permitted-Cross-Domain-Policies:[none] X-Request-Id:[211f21b9-c38e-4007-a9bc-9a236ef55764]
+X-Runtime:[0.004963] X-Xss-Protection:[1; mode=block]] 0xc000092100 -1 [chunked] false true map[] 0xc00011a000 0xc00007c420}
