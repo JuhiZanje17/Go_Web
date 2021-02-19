@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-const channelCapacity=101
+const channelCapacity=10
 
 func makeRange(min, max int) []int {
 	a := make([]int, max-min+1)
@@ -17,8 +17,8 @@ func makeRange(min, max int) []int {
 
 func apiCall(i int,ch chan bool) {
 	log.Println("API call for", i, "started")
-	//time.Sleep(100 * time.Millisecond)
-	ch<-true
+	time.Sleep(100 * time.Millisecond)
+	<-ch
 }
 
 func main() {
@@ -30,11 +30,12 @@ func main() {
 	start := time.Now()
 
 	for i, _ := range numArray {
+		ch<-true
 		go apiCall(i,ch)		
 	}
 
 	for i:=0;i<channelCapacity;i++{
-		<-ch
+		ch<-true
 	}
 
 	elapsed := time.Since(start)
