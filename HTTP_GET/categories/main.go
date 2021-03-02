@@ -1,16 +1,15 @@
 package main
 
 import (
-	"fmt"
 	"encoding/json"
-	"net/http"
+	"fmt"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"time"
 )
 
-type struct_to_generate struct{
-	
+type struct_to_generate struct {
 	Code int `json:"code"`
 	Meta struct {
 		Pagination struct {
@@ -28,34 +27,32 @@ type struct_to_generate struct{
 		CreatedAt time.Time `json:"created_at"`
 		UpdatedAt time.Time `json:"updated_at"`
 	} `json:"data"`
-		
 }
 
-func main(){
+func main() {
 
-	url:="https://gorest.co.in/public-api/categories"
+	url := "https://gorest.co.in/public-api/categories"
 
-	resp,err:=http.Get(url)
+	resp, err := http.Get(url)
 
-	if err!=nil{
+	if err != nil {
 		log.Fatalln(err)
 	}
 
-	body,err:=ioutil.ReadAll(resp.Body)
-	if err!=nil{
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
 		log.Fatalln(err)
 	}
 
 	var data struct_to_generate
-	_=json.Unmarshal(body,&data)
+	_ = json.Unmarshal(body, &data)
 
 	fmt.Println(data.Meta)
 
-	file_content,_:=json.MarshalIndent(data,"","	")
-	err=ioutil.WriteFile("category.json",file_content,0644)
-	if err!=nil{
+	file_content, _ := json.MarshalIndent(data, "", "	")
+	err = ioutil.WriteFile("category.json", file_content, 0644)
+	if err != nil {
 		log.Fatalln(err)
 	}
-
 
 }
