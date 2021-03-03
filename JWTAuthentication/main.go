@@ -21,8 +21,8 @@ var (
 	host     = getCredentials("HOST")
 	password = getCredentials("PASSWORD")
 	dbname   = getCredentials("DB")
+	db       *gorm.DB
 )
-var db *gorm.DB
 
 type User struct {
 	gorm.Model
@@ -125,54 +125,81 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func Welcome(w http.ResponseWriter, r *http.Request) {
+func Welcome(handler http.HandlerFunc) http.HandlerFunc {
 
-	c, err := r.Cookie("token")
-	if err != nil {
-		if err == http.ErrNoCookie {
-			// If the cookie is not set, return an unauthorized status
-			w.WriteHeader(http.StatusUnauthorized)
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		c, err := r.Cookie("token")
+		if err != nil {
+			handler.ServeHTTP(w, r)
 			return
 		}
-		// For any other type of error, return a bad request status
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
 
-	// Get the JWT string from the cookie
-	tknStr := c.Value
+		// Get the JWT string from the cookie
+		tknStr := c.Value
 
-	// Initialize a new instance of `Claims`
-	claims := &Claims{}
+		// Initialize a new instance of `Claims`
+		claims := &Claims{}
 
-	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
-		return secKey, nil
-	})
+		tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
+			return secKey, nil
+		})
 
-	if err != nil {
-		if err == jwt.ErrSignatureInvalid {
-			w.WriteHeader(http.StatusUnauthorized)
+		if !tkn.Valid {
+			//w.WriteHeader(http.StatusUnauthorized)
+			handler.ServeHTTP(w, r)
 			return
 		}
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	if !tkn.Valid {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
 
-	fmt.Println("claims=", claims)
+		if claims.Role == "superAdmin" {
+			http.Redirect(w, r, "/superAdmin", 301)
+			return
+		} else if claims.Role == "admin" {
+			http.Redirect(w, r, "/admin", 301)
+			return
+		} else {
+			http.Redirect(w, r, "/user", 301)
+			return
+		}
 
-	if claims.Role == "admin" {
-		http.Redirect(w, r, "/admin", 301)
-		return
-	} else {
-		http.Redirect(w, r, "/user", 301)
-		return
 	}
 
-	w.Write([]byte(fmt.Sprintf("Welcome %s!", claims.Username)))
+	//fmt.Println("claims=", claims)
+
+	//w.Write([]byte(fmt.Sprintf("Welcome %s!", claims.Username)))
+}
+
+func middleWare(handler http.HandlerFunc) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		c, err := r.Cookie("token")
+		if err != nil {
+			http.Redirect(w, r, "/public", 301)
+			return
+		}
+
+		// Get the JWT string from the cookie
+		tknStr := c.Value
+
+		// Initialize a new instance of `Claims`
+		claims := &Claims{}
+
+		tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
+			return secKey, nil
+		})
+
+		if !tkn.Valid {
+			http.Redirect(w, r, "/public", 301)
+			return
+		} else {
+			handler.ServeHTTP(w, r)
+			return
+		}
+
+	}
+
+	//w.Write([]byte(fmt.Sprintf("Welcome %s!", claims.Username)))
 }
 
 func adminPage(w http.ResponseWriter, r *http.Request) {
@@ -183,6 +210,16 @@ func adminPage(w http.ResponseWriter, r *http.Request) {
 func userPage(w http.ResponseWriter, r *http.Request) {
 
 	w.Write([]byte(fmt.Sprintf("Welcome User")))
+
+}
+func superAdminPage(w http.ResponseWriter, r *http.Request) {
+
+	w.Write([]byte(fmt.Sprintf("Welcome Super Admin")))
+
+}
+func public(w http.ResponseWriter, r *http.Request) {
+
+	w.Write([]byte(fmt.Sprintf("Welcome Public")))
 
 }
 
@@ -211,9 +248,10 @@ func main() {
 		fmt.Println("not inserted")
 	}
 	http.HandleFunc("/login", login)
-	http.HandleFunc("/admin", adminPage)
-	http.HandleFunc("/user", userPage)
-	http.HandleFunc("/welcome", Welcome)
+	http.HandleFunc("/superAdmin", middleWare(superAdminPage))
+	http.HandleFunc("/admin", middleWare(adminPage))
+	http.HandleFunc("/user", middleWare(userPage))
+	http.HandleFunc("/welcome", Welcome(public))
 	http.HandleFunc("/signup", signupPage)
 	fmt.Println("listening on 8000")
 
