@@ -122,7 +122,9 @@ func fetch(w http.ResponseWriter, r *http.Request) {
 			for !ops.IsEmpty() && check(r, ops.Peek()) {
 				num, err := cal(ops.Pop(), values.Pop(), values.Pop())
 				if !err {
-					response, _ := json.Marshal(struct{ res string }{"divide by zero"})
+					response, _ := json.Marshal(struct {
+						Res string `json:"res"`
+					}{"divide by zero"})
 					w.Write(response)
 					return
 				}
@@ -134,8 +136,11 @@ func fetch(w http.ResponseWriter, r *http.Request) {
 	for !ops.IsEmpty() {
 		num, err := cal(ops.Pop(), values.Pop(), values.Pop())
 		if !err {
-			response, _ := json.Marshal(struct{ res string }{"divide by zero"})
+			response, _ := json.Marshal(struct {
+				Res string `json:"res"`
+			}{"divide by zero"})
 			w.Write(response)
+			return
 		}
 		values.Push(num)
 	}
