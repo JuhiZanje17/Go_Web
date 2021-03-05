@@ -7,11 +7,9 @@
 	<!-- Requi#00d9ff CDN's -->
 	<link rel="stylesheet"
 		href= "https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> 
-	<script src= 
-"https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"> 
+	<script src= "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"> 
 	</script> 
-	<script src= 
-"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"> 
+	<script src= "https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"> 
 	</script> 
 	<style> 
 		.calculator { 
@@ -158,7 +156,7 @@
 							<div class="design not"
 								id="equals"
 								style="background-color:#00d9ff;">								
-									<input type="button" id="sub" value="=" style="background-color:#00d9ff;">								
+									<input type="button" id="equal" value="=" style="background-color:#00d9ff;">								
 								</div> 
 						</div>					 
 
@@ -169,17 +167,14 @@
 		<div class="col-sm-2 col-md-4">  </div> 
 	</div> 
 	<script>
-		
-		$("#sub").click(function(){
-			console.log($("#expression").val())
-			console.log(typeof($("#expression").val()))
+		//click equal button
+		$("#equal").click(function(){
 			
 			let user = {
 				exp: $("#expression").val()
 			};
 
-			async function fet(){
-				console.log(user)
+			async function fet(){				
 				let response = await fetch('http://localhost:8080/fetch', {
 				method: 'POST',
 				headers: {

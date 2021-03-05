@@ -106,7 +106,7 @@ func fetch(w http.ResponseWriter, r *http.Request) {
 
 			sbt := ""
 			for i < len(data.Exp) {
-				fmt.Println("i=", i)
+
 				if (data.Exp[i] >= 48 && data.Exp[i] <= 57) || r == "." {
 					sbt = sbt + r
 				} else {
@@ -161,8 +161,7 @@ func fetch(w http.ResponseWriter, r *http.Request) {
 	}
 	f.Close()
 
-	resp, _ := json.Marshal(data)
-	w.Write(resp)
+	w.Write(file_content)
 }
 
 func main() {
