@@ -11,20 +11,20 @@ import (
 
 type expression struct {
 	Exp string  `json:"exp"`
-	Res float64 `json:"res"`
+	Res float32 `json:"res"`
 }
 
-type Stack []string
+type Stack []float32
 
 func (s *Stack) IsEmpty() bool {
 	return len(*s) == 0
 }
 
-func (s *Stack) Push(exp string) {
+func (s *Stack) Push(exp float32) {
 	*s = append(*s, exp)
 }
 
-func (s *Stack) Pop() string {
+func (s *Stack) Pop() float32 {
 
 	index := len(*s) - 1
 	element := (*s)[index]
@@ -33,7 +33,26 @@ func (s *Stack) Pop() string {
 
 }
 
-func (s *Stack) Peek() string {
+type Stacks []string
+
+func (s *Stacks) IsEmpty() bool {
+	return len(*s) == 0
+}
+
+func (s *Stacks) Push(exp string) {
+	*s = append(*s, exp)
+}
+
+func (s *Stacks) Pop() string {
+
+	index := len(*s) - 1
+	element := (*s)[index]
+	*s = (*s)[:index]
+	return element
+
+}
+
+func (s *Stacks) Peek() string {
 
 	index := len(*s) - 1
 	element := (*s)[index]
@@ -50,10 +69,7 @@ func check(op1, op2 string) bool {
 	}
 }
 
-func cal(op string, bnum string, anum string) (float64, bool) {
-
-	a, _ := strconv.ParseFloat(anum, 64)
-	b, _ := strconv.ParseFloat(bnum, 64)
+func cal(op string, b float32, a float32) (float32, bool) {
 
 	switch op {
 	case "+":
@@ -64,6 +80,7 @@ func cal(op string, bnum string, anum string) (float64, bool) {
 		return a * b, true
 	case "/":
 		if b == 0 {
+			fmt.Println("err")
 			return -1, false
 		}
 		return a / b, true
@@ -79,7 +96,8 @@ func fetch(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	var values, ops Stack
+	var values Stack
+	var ops Stacks
 
 	for i := 0; i < len(data.Exp); i++ {
 
@@ -98,9 +116,8 @@ func fetch(w http.ResponseWriter, r *http.Request) {
 				i++
 			}
 			i--
-
-			values.Push(sbt)
-
+			val, _ := strconv.ParseFloat(sbt, 32)
+			values.Push(float32(val))
 		} else if r == "+" || r == "-" || r == "*" || r == "/" {
 
 			for !ops.IsEmpty() && check(r, ops.Peek()) {
@@ -112,13 +129,12 @@ func fetch(w http.ResponseWriter, r *http.Request) {
 					w.Write(response)
 					return
 				}
-				values.Push(fmt.Sprint(num))
+				values.Push(num)
 			}
 			ops.Push(r)
 		}
 	}
 	for !ops.IsEmpty() {
-
 		num, err := cal(ops.Pop(), values.Pop(), values.Pop())
 		if !err {
 			response, _ := json.Marshal(struct {
@@ -127,10 +143,10 @@ func fetch(w http.ResponseWriter, r *http.Request) {
 			w.Write(response)
 			return
 		}
-		values.Push(fmt.Sprint(num))
+		values.Push(num)
 	}
 
-	data.Res, _ = strconv.ParseFloat(values.Pop(), 64)
+	data.Res = values.Pop()
 
 	file_content, _ := json.MarshalIndent(data, "", "	")
 
