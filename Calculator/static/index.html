@@ -139,26 +139,21 @@
 						</div> 
 					</div> 
 					<div class="row"> 
-						<div class="col-sm-3"> 
-							<div class="design"
-								style="background-color:#00d9ff;">(</div> 
-						</div> 
-						<div class="col-sm-3"> 
-							<div class="design"
-								style="background-color:#00d9ff;">)</div> 
-						</div> 
+						<div class="col-sm-3"> </div> 
+						
 						<div class="col-sm-3"> 
 							<div class="design not"
 								id="allClear"
 								style="background-color:#00d9ff;">AC</div> 
 						</div> 
 						<div class="col-sm-3"> 
-							<div class="design not"
+							<div class="design not equal"
 								id="equals"
 								style="background-color:#00d9ff;">								
-									<input type="button" id="equal" value="=" style="background-color:#00d9ff;">								
-								</div> 
-						</div>					 
+									<!-- <input type="button" id="equal" value="=" style="background-color:#00d9ff;">								 -->
+								=</div> 
+						</div>	
+						<div class="col-sm-3"> </div> 				 
 
 					</div> 
 				</div> 
@@ -168,7 +163,7 @@
 	</div> 
 	<script>
 		//click equal button
-		$("#equal").click(function(){
+		$(".equal").click(function(){
 			
 			let user = {
 				exp: $("#expression").val()

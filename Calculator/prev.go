@@ -117,6 +117,7 @@ func fetch(w http.ResponseWriter, r *http.Request) {
 			}
 			i--
 			val, _ := strconv.ParseFloat(sbt, 32)
+			fmt.Println("sbt=", sbt, "val=", val)
 			values.Push(float32(val))
 		} else if r == "+" || r == "-" || r == "*" || r == "/" {
 

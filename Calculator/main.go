@@ -83,22 +83,25 @@ func fetch(w http.ResponseWriter, r *http.Request) {
 
 	for i := 0; i < len(data.Exp); i++ {
 
-		r := string(data.Exp[i])
+		val := data.Exp[i]
+		r := string(val)
 
-		if (data.Exp[i] >= 48 && data.Exp[i] <= 57) || r == "." {
+		if (val >= 48 && val <= 57) || r == "." {
 
 			sbt := ""
 			for i < len(data.Exp) {
 
-				if (data.Exp[i] >= 48 && data.Exp[i] <= 57) || r == "." {
-					sbt = sbt + r
+				val = data.Exp[i]
+				r = string(val)
+
+				if (val >= 48 && val <= 57) || r == "." {
+					sbt = sbt + string(val)
 				} else {
 					break
 				}
 				i++
 			}
 			i--
-
 			values.Push(sbt)
 
 		} else if r == "+" || r == "-" || r == "*" || r == "/" {
